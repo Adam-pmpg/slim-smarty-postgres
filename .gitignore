@@ -1,0 +1,52 @@
+# Ignoruj pliki systemowe
+.DS_Store
+Thumbs.db
+
+# Ignoruj pliki konfiguracyjne środowisk lokalnych
+.env
+.env.*
+
+# Ignoruj logi
+logs/
+*.log
+
+# Ignoruj konfiguracje edytorów
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignoruj cache i tymczasowe pliki PHP
+cache/
+tmp/
+*.bak
+
+# Ignoruj katalogi vendor i composer.lock (jeśli używasz Composer)
+vendor/
+composer.lock
+
+# Ignoruj cache Smarty
+templates_c/
+configs/
+sessions/
+
+# Ignoruj pliki wygenerowane przez Docker
+docker-compose.override.yml
+**/Dockerfile
+**/docker-compose.yml
+
+# Ignoruj zależności node_modules (jeśli używasz NPM)
+node_modules/
+
+# Ignoruj inne katalogi zależności i pliki buildów
+build/
+dist/
+
+# Ignoruj migawki i pliki generowane przez bazę danych
+*.sql
+*.sqlite
+data/
+.pgdata/
+
+# Ignoruj pliki pgAdmina
+pgadmin/
