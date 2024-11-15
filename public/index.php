@@ -23,11 +23,19 @@ $app = AppFactory::create();
 $app->add(new CorsMiddleware([
     "origin" => ["*"],  // Zezwala na dostęp z dowolnej domeny
     "methods" => ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Dozwolone metody HTTP
-    "headers.allow" => ["Content-Type", "Authorization"],  // Dozwolone nagłówki
+    "headers.allow" => ["Content-Type", "Authorization", "X-Requested-With"],
     "headers.expose" => [],  // Nagłówki, które mogą być dostępne dla aplikacji JavaScript
     "credentials" => true,  // Włącza obsługę poświadczeń (np. cookies)
     "maxAge" => 3600,  // Czas życia odpowiedzi CORS w sekundach
 ]));
+
+$app->options('/{routes:.+}', function ($request, $response) {
+    return $response->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+        ->withHeader('Access-Control-Allow-Credentials', 'true')
+        ->withStatus(200);
+});
 
 $app->get('/hello/{name}', function (Request $request, Response $response, $args) {
     $name = $args['name'];
