@@ -5,6 +5,7 @@ services:
       - "8180:80"  # Używamy portu 8180 zamiast 8080
     volumes:
       - .:/var/www/html
+      - ./chunks:/chunks  # Montowanie katalogu ./chunks na hosta do /chunks w kontenerze
     depends_on:
       - db-slim
 
