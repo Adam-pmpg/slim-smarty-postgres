@@ -13,26 +13,24 @@ Aplikacja PHP Slim będzie dostępna na porcie 8180 (http://localhost:8180)
 
 phpPgAdmin będzie dostępny na porcie 8181 (http://localhost:8181)
 
-##Uruchomienie aplikacji | Docker
+##Docker
 
 #1. Zbuduj obraz Docker na podstawie pliku Dockerfile
 docker-compose build
 
 #2. Uruchom wszystkie kontenery zdefiniowane w docker-compose.yml
 
-docker-compose up -d --build
+docker-compose up
 
-docker-compose up -d
-
-##Przebudowanie obrazu z nowymi zależnościami
+###Przebudowanie obrazu z nowymi zależnościami
 
 docker-compose up -d --build
 
-##zatrzymanie kontenerów
+###zatrzymanie kontenerów
 
 docker-compose down
 
-##Obrazy
+###Obrazy
 
 0ac6bdb33cba   dockage/phppgadmin             "/sbin/entrypoint ap…"   About a minute ago   Up About a minute   443/tcp, 0.0.0.0:8181->80/tcp, [::]:8181->80/tcp   php-slim-api-phppgadmin-slim-1
 fcb08ad4c99d   php-slim-api-php-apache-slim   "docker-php-entrypoi…"   About a minute ago   Up About a minute   0.0.0.0:8180->80/tcp, [::]:8180->80/tcp            php-slim-api-php-apache-slim-1
@@ -43,6 +41,13 @@ e6faa3355787   postgres:13                    "docker-entrypoint.s…"   About a
 ###Jeśli potrzeba, uruchomienie coposer'a wewnątrz kontenera
 
 docker-compose exec php-apache-slim composer install
+###Zanurkuj do kontenera
+
+docker exec -it slim-smarty-postgres-php-apache-slim-1 /bin/bash
+
+####np. dodanie jakiejś zależności do composer.json, wewnątrz kontenera
+
+composer require tuupola/slim-cors
 
 ###Testowanie dostępu do aplikacji i phpPgAdmin
 

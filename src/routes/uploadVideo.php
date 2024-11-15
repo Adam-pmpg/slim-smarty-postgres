@@ -4,44 +4,39 @@ use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 function uploadVideo($app) {
-    // Zdefiniowanie trasy POST /upload-video
-    $app->post('/upload-video', function (Request $request, Response $response) {
-        // Sprawdzenie, czy plik został przesłany
-        if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
-            // Ścieżka do folderu, w którym zapisujemy wideo
-            $uploadDirectory = __DIR__ . '/uploads/';
+    $app->post('/upload', function (Request $request, Response $response) {
+        // Odczytujemy dane z formularza
+        $parsedBody = $request->getParsedBody();
+        $chunkIndex = isset($parsedBody['chunkIndex']) ? (int)$parsedBody['chunkIndex'] : null;
+        $totalChunks = isset($parsedBody['totalChunks']) ? (int)$parsedBody['totalChunks'] : null;
 
-            // Sprawdzamy, czy folder istnieje, jeśli nie, to go tworzymy
-            if (!is_dir($uploadDirectory)) {
-                mkdir($uploadDirectory, 0777, true);
-            }
-
-            // Ścieżka, gdzie plik będzie zapisany
-            $uploadedFilePath = $uploadDirectory . basename($_FILES['video']['name']);
-
-            // Przeniesienie przesłanego pliku do docelowego folderu
-            if (move_uploaded_file($_FILES['video']['tmp_name'], $uploadedFilePath)) {
-                $responseData = [
-                    'status' => 'success',
-                    'message' => 'Video uploaded successfully!',
-                    'file_path' => $uploadedFilePath
-                ];
-                return $response->withJson($responseData, 200);
-            } else {
-                // Błąd przy przesyłaniu pliku
-                $responseData = [
-                    'status' => 'error',
-                    'message' => 'Failed to upload video.'
-                ];
-                return $response->withJson($responseData, 500);
-            }
-        } else {
-            // Brak pliku lub błąd w przesyłaniu
+        // Sprawdzamy czy chunkIndex lub totalChunks są przesłane
+        if ($chunkIndex === null || $totalChunks === null) {
             $responseData = [
                 'status' => 'error',
-                'message' => 'No video file uploaded or error during upload.'
+                'message' => 'Missing chunkIndex or totalChunks parameter.',
+                'chunkIndex' => $chunkIndex
             ];
-            return $response->withJson($responseData, 400);
+
+            // Zwracamy odpowiedź z błędem w formacie JSON
+            $response->getBody()->write(json_encode($responseData));  // Zapisujemy dane w ciele odpowiedzi
+            return $response
+                ->withHeader('Content-Type', 'application/json')  // Ustawiamy nagłówek Content-Type
+                ->withStatus(400); // Kod odpowiedzi HTTP (w tym przypadku 400)
         }
+
+        // Tworzymy odpowiedź o powodzeniu
+        $responseData = [
+            'status' => 'success',
+            'message' => 'Data received successfully!',
+            'chunk_index' => $chunkIndex,
+            'total_chunks' => $totalChunks
+        ];
+
+        // Zwracamy odpowiedź z powodzeniem w formacie JSON
+        $response->getBody()->write(json_encode($responseData));  // Zapisujemy dane w ciele odpowiedzi
+        return $response
+            ->withHeader('Content-Type', 'application/json')  // Ustawiamy nagłówek Content-Type
+            ->withStatus(200); // Kod odpowiedzi HTTP (w tym przypadku 200)
     });
 }

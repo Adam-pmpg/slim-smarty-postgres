@@ -23,6 +23,11 @@ RUN composer install
 # Skopiowanie lokalnych plików projektu do kontenera
 COPY . .
 
+# Tworzenie katalogów templates_c i cache oraz nadanie uprawnień
+RUN mkdir -p /var/www/html/templates_c /var/www/html/cache && \
+    chmod -R 777 /var/www/html/templates_c /var/www/html/cache && \
+    chown -R root:www-data /var/www/html
+
 # Zmiana katalogu root na public
 RUN echo "DocumentRoot /var/www/html/public" > /etc/apache2/sites-available/000-default.conf
 
