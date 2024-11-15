@@ -10,33 +10,78 @@ function uploadVideo($app) {
         $chunkIndex = isset($parsedBody['chunkIndex']) ? (int)$parsedBody['chunkIndex'] : null;
         $totalChunks = isset($parsedBody['totalChunks']) ? (int)$parsedBody['totalChunks'] : null;
 
-        // Sprawdzamy czy chunkIndex lub totalChunks są przesłane
+        // Sprawdzamy, czy chunkIndex i totalChunks są przesłane
         if ($chunkIndex === null || $totalChunks === null) {
             $responseData = [
                 'status' => 'error',
                 'message' => 'Missing chunkIndex or totalChunks parameter.',
                 'chunkIndex' => $chunkIndex
             ];
-
-            // Zwracamy odpowiedź z błędem w formacie JSON
             $response->getBody()->write(json_encode($responseData));  // Zapisujemy dane w ciele odpowiedzi
             return $response
                 ->withHeader('Content-Type', 'application/json')  // Ustawiamy nagłówek Content-Type
-                ->withStatus(400); // Kod odpowiedzi HTTP (w tym przypadku 400)
+                ->withStatus(400); // Kod odpowiedzi HTTP (400 - Bad Request)
         }
 
-        // Tworzymy odpowiedź o powodzeniu
+        // Sprawdzamy, czy plik został przesłany
+        $uploadedFiles = $request->getUploadedFiles();
+        if (!isset($uploadedFiles['file'])) {
+            $responseData = [
+                'status' => 'error',
+                'message' => 'No file uploaded.'
+            ];
+            $response->getBody()->write(json_encode($responseData));
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+
+        $file = $uploadedFiles['file'];
+        if ($file->getError() !== UPLOAD_ERR_OK) {
+            $responseData = [
+                'status' => 'error',
+                'message' => 'Error uploading file.'
+            ];
+            $response->getBody()->write(json_encode($responseData));
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(500);
+        }
+
+        // Tworzymy folder na chunki, jeśli jeszcze nie istnieje
+        $chunksDir = __DIR__ . '/../../chunks';
+        if (!is_dir($chunksDir)) {
+            mkdir($chunksDir, 0777, true);
+        }
+
+        // Ścieżka do zapisu fragmentu
+        $originalName = $file->getClientFilename();
+        $chunkPath = $chunksDir . "/chunk_{$chunkIndex}__{$originalName}";
+
+        /*var_dump([
+            '$chunkPath' => $chunkPath,
+            '$originalName' => $originalName,
+        ]);*/
+
+        // Zapisujemy fragment na dysku
+        $file->moveTo($chunkPath);
+
+        // Logowanie
+        echo "Fragment $chunkIndex zapisany: $chunkPath\n";
+
+        // Zwracamy odpowiedź o powodzeniu z danymi o postępie
         $responseData = [
             'status' => 'success',
-            'message' => 'Data received successfully!',
-            'chunk_index' => $chunkIndex,
-            'total_chunks' => $totalChunks
+            'message' => 'Chunk uploaded successfully.',
+            'chunkIndex' => $chunkIndex,
+            'totalChunks' => $totalChunks,
+            'progress' => ($chunkIndex + 1) / $totalChunks * 100, // Procent ukończenia
+            'file' => $originalName
         ];
 
-        // Zwracamy odpowiedź z powodzeniem w formacie JSON
-        $response->getBody()->write(json_encode($responseData));  // Zapisujemy dane w ciele odpowiedzi
+        $response->getBody()->write(json_encode($responseData));
         return $response
-            ->withHeader('Content-Type', 'application/json')  // Ustawiamy nagłówek Content-Type
-            ->withStatus(200); // Kod odpowiedzi HTTP (w tym przypadku 200)
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200); // Kod odpowiedzi HTTP (200 - OK)
     });
 }
