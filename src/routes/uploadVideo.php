@@ -66,8 +66,9 @@ function uploadVideo($app) {
         // Zapisujemy fragment na dysku
         $file->moveTo($chunkPath);
 
-        // Logowanie
-        echo "Fragment $chunkIndex zapisany: $chunkPath\n";
+        // Logowanie, ale to echo robi błąd w responsie dla CMSa
+        //echo "Fragment $chunkIndex zapisany: $chunkPath\n";
+        error_log("Fragment $chunkIndex zapisany: $chunkPath");
 
         // Zwracamy odpowiedź o powodzeniu z danymi o postępie
         $responseData = [
