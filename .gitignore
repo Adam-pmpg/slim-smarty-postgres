@@ -32,8 +32,8 @@ sessions/
 
 # Ignoruj pliki wygenerowane przez Docker
 docker-compose.override.yml
-**/Dockerfile
-**/docker-compose.yml
+# **/Dockerfile
+# **/docker-compose.yml
 
 # Ignoruj zależności node_modules (jeśli używasz NPM)
 node_modules/
