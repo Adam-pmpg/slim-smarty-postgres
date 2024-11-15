@@ -1,4 +1,4 @@
-#Slim API
+#PHP Slim Smarty Postgres
 
 ##Opis
 Potrzebuję małe API do odebrania pociętego video
