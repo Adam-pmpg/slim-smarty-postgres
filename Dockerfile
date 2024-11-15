@@ -5,8 +5,11 @@ RUN apt-get update && \
     apt-get install -y nano libzip-dev unzip libpq-dev && \
     docker-php-ext-install zip pdo_pgsql
 
+# Skopiowanie pliku php.ini (jeśli masz go w swoim projekcie)
+COPY config/php.ini /usr/local/etc/php/php.ini
+
 # Instalacja Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Ustawienie katalogu roboczego
 WORKDIR /var/www/html
@@ -22,6 +25,9 @@ RUN composer install
 
 # Skopiowanie lokalnych plików projektu do kontenera
 COPY . .
+
+# Instalacja zależności PHP za pomocą Composer (jeśli masz plik composer.json)
+RUN composer install --no-dev --optimize-autoloader
 
 # Tworzenie katalogów templates_c i cache oraz nadanie uprawnień
 RUN mkdir -p /var/www/html/templates_c /var/www/html/cache && \
