@@ -29,6 +29,8 @@ composer.lock
 templates_c/
 configs/
 sessions/
+chunks/
+output/
 
 # Ignoruj pliki wygenerowane przez Docker
 docker-compose.override.yml
