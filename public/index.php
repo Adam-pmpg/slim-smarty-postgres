@@ -4,6 +4,7 @@ require __DIR__ . '/../db/db.php';
 require __DIR__ . '/../src/routes/users.php';
 require __DIR__ . '/../src/routes/uploadVideo.php';
 require __DIR__ . '/../src/routes/getHomepage.php';
+require __DIR__ . '/../src/routes/clearChunks.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -49,5 +50,7 @@ getHomepage($app, $smarty);
 getUsers($app, $pdo);
 // Zarejestruj trasę /upload-video
 uploadVideo($app);
+
+clearChunks($app);
 
 $app->run();
