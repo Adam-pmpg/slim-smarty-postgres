@@ -86,3 +86,10 @@ docker-compose down
 ## Do kontenera
 
 docker-compose exec php-apache-slim bash
+
+## TIP 
+- w dockerze jest użytkownik www-data
+- aby zmienić użytkownika z lokalnego, na serwerowego w dockerze:
+```
+chown -R www-data:www-data ./output/
+```

@@ -5,6 +5,7 @@ require __DIR__ . '/../src/routes/users.php';
 require __DIR__ . '/../src/routes/uploadVideo.php';
 require __DIR__ . '/../src/routes/getHomepage.php';
 require __DIR__ . '/../src/routes/clearChunks.php';
+require __DIR__ . '/../src/routes/mergeVideo.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -52,5 +53,7 @@ getUsers($app, $pdo);
 uploadVideo($app);
 
 clearChunks($app);
+
+mergeVideo($app);
 
 $app->run();
