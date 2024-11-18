@@ -13,8 +13,9 @@ function mergeVideo($app) {
             $response->getBody()->write(json_encode([
                 'status' => 'error',
                 'message' => 'Brak plików do scalania.'
-            ]));
-            return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
+            ], JSON_UNESCAPED_UNICODE));  // Zapobiega escape'owaniu znaków Unicode, np. polskich liter
+
+            return $response->withStatus(404)->withHeader('Content-Type', 'application/json; charset=utf-8');
         }
 
         // Podziel nazwę pierwszego fragmentu na części
@@ -52,8 +53,12 @@ function mergeVideo($app) {
             $chunkHandle = fopen($chunk, 'rb');
             if (!$chunkHandle) {
                 fclose($outputHandle);
-                $response->getBody()->write("Nie udało się otworzyć części pliku: " . basename($chunk));
-                return $response->withStatus(500);
+                $response->getBody()->write(json_encode([
+                    'status' => 'error',
+                    'message' => 'Nie udało się otworzyć części pliku: ' . basename($chunk)
+                ], JSON_UNESCAPED_UNICODE));  // Zapobiega escape'owaniu polskich znaków
+
+                return $response->withStatus(500)->withHeader('Content-Type', 'application/json; charset=utf-8');
             }
 
             // Zapisz zawartość kawałka do pliku wynikowego
