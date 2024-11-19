@@ -20,7 +20,8 @@ function mergeVideo($app) {
         // Podziel nazwę pierwszego fragmentu na części
         $firstChunk = basename($chunks[0]); // np. "chunk_0__v-bdda1d43-f307-440a-8273-b696c916f976_original.mp4"
         $parts = explode('__', $firstChunk); // Rozdzielenie na części, używając "__" jako separatora
-        if (count($parts) < 2) {
+        //error_log('Zawartość $parts: ' . json_encode($parts));
+        if (count($parts) === 0) {
             $response->getBody()->write(json_encode([
                 'status' => 'error',
                 'message' => 'Nie udało się wyodrębnić nazwy oryginalnego pliku.'
