@@ -93,3 +93,6 @@ docker-compose exec php-apache-slim bash
 ```
 chown -R www-data:www-data ./output/
 ```
+
+## Logi
+docker logs -f slim-smarty-postgres-php-apache-slim-1
