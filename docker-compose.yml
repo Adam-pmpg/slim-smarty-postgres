@@ -6,7 +6,8 @@ services:
     volumes:
       - .:/var/www/html
       - ./chunks:/chunks  # Montowanie katalogu ./chunks na hosta do /chunks w kontenerze
-      - ./logs:/var/log/php_errors.log
+      - ./output:/output  # Montowanie katalogu output jako woluminu
+      - ./logs:/var/log/php_errors
     depends_on:
       - db-slim
 
