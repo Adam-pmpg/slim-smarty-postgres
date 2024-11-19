@@ -1,5 +1,4 @@
 <?php
-
 // Funkcja do rejestracji trasy scalania plików w Slim
 function mergeVideo($app) {
     // Endpoint do scalania plików
@@ -13,7 +12,7 @@ function mergeVideo($app) {
             $response->getBody()->write(json_encode([
                 'status' => 'error',
                 'message' => 'Brak plików do scalania.'
-            ], JSON_UNESCAPED_UNICODE));  // Zapobiega escape'owaniu znaków Unicode, np. polskich liter
+            ], JSON_UNESCAPED_UNICODE));
 
             return $response->withStatus(404)->withHeader('Content-Type', 'application/json; charset=utf-8');
         }
@@ -25,18 +24,16 @@ function mergeVideo($app) {
             $response->getBody()->write(json_encode([
                 'status' => 'error',
                 'message' => 'Nie udało się wyodrębnić nazwy oryginalnego pliku.'
-            ], JSON_UNESCAPED_UNICODE));  // JSON_UNESCAPED_UNICODE zapewnia, że polskie znaki nie będą escape'owane
+            ], JSON_UNESCAPED_UNICODE));
 
             return $response->withStatus(500)->withHeader('Content-Type', 'application/json; charset=utf-8');
         }
 
         // Wydobycie oryginalnej nazwy z drugiej części (np. "v-bdda1d43-f307-440a-8273-b696c916f976_original.mp4")
-        $originalNameWithExtension = $parts[1];
-        $originalName = pathinfo($originalNameWithExtension, PATHINFO_FILENAME); // Usuwamy rozszerzenie
+        $originalNameWithExtension = $parts[1];  // Pozostaje pełna nazwa z rozszerzeniem
 
-        // Wydobycie rozszerzenia z pierwszego pliku (np. .mp4, .wmv itd.)
-        $fileExtension = pathinfo($chunks[0], PATHINFO_EXTENSION);
-        $outputFile = $outputDir . $originalName . '.' . $fileExtension;
+        // Zamiast wyodrębniać rozszerzenie, bezpośrednio tworzymy plik wynikowy z pełną nazwą
+        $outputFile = $outputDir . $originalNameWithExtension;  // Pełna nazwa (z rozszerzeniem)
 
         // Tworzenie pliku wynikowego
         $outputHandle = fopen($outputFile, 'wb');
@@ -44,7 +41,8 @@ function mergeVideo($app) {
             $response->getBody()->write(json_encode([
                 'status' => 'error',
                 'message' => 'Nie udało się utworzyć pliku wynikowego.'
-            ]));
+            ], JSON_UNESCAPED_UNICODE));
+
             return $response->withStatus(500)->withHeader('Content-Type', 'application/json; charset=utf-8');
         }
 
@@ -56,7 +54,7 @@ function mergeVideo($app) {
                 $response->getBody()->write(json_encode([
                     'status' => 'error',
                     'message' => 'Nie udało się otworzyć części pliku: ' . basename($chunk)
-                ], JSON_UNESCAPED_UNICODE));  // Zapobiega escape'owaniu polskich znaków
+                ], JSON_UNESCAPED_UNICODE));
 
                 return $response->withStatus(500)->withHeader('Content-Type', 'application/json; charset=utf-8');
             }
@@ -74,7 +72,8 @@ function mergeVideo($app) {
 
         $response->getBody()->write(json_encode([
             'status' => 'success',
-            'message' => 'Plik został scalony pomyślnie.'
+            'message' => 'Plik został scalony pomyślnie.',
+            'output_file' => $originalNameWithExtension
         ], JSON_UNESCAPED_UNICODE));
 
         return $response->withHeader('Content-Type', 'application/json; charset=utf-8');
