@@ -87,12 +87,24 @@ docker-compose down
 
 docker-compose exec php-apache-slim bash
 
-## TIP 
+## TIP
+### Zmiana użytkownika w dockerze
 - w dockerze jest użytkownik www-data
 - aby zmienić użytkownika z lokalnego, na serwerowego w dockerze:
 ```
 chown -R www-data:www-data ./output/
 ```
 
+### Dodanie użytkwniak do grupy
+- w dokerze mam grupę www-data, tworzę Dockerfile'a, ale chcę móc lokalnie dokonywać zmian
+```
+sudo usermod -aG www-data aksiazek
+```
+- trzeba się wylogować i zalogować lub uruchomić nową sesję dla użytkownika
+```
+su - aksiazek
+```
+
 ## Logi
 docker logs -f slim-smarty-postgres-php-apache-slim-1
+
