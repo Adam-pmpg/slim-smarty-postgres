@@ -48,14 +48,16 @@ function uploadVideo($app) {
                 ->withStatus(500);
         }
 
-        // Tworzymy folder na chunki, jeśli jeszcze nie istnieje
-        $chunksDir = __DIR__ . '/../../chunks';
+        $originalName = $file->getClientFilename();
+        $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+        $chunksDir = __DIR__ . "/../../chunks/{$safeName}";
+
         if (!is_dir($chunksDir)) {
             mkdir($chunksDir, 0777, true);
         }
 
         // Ścieżka do zapisu fragmentu
-        $originalName = $file->getClientFilename();
+
         $chunkPath = $chunksDir . "/chunk_{$chunkIndex}__{$originalName}";
 
         /*var_dump([
