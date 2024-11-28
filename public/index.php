@@ -1,19 +1,15 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../db/db.php';
-require __DIR__ . '/../src/routes/users.php';
-require __DIR__ . '/../src/routes/uploadVideo.php';
-require __DIR__ . '/../src/routes/getHomepage.php';
-require __DIR__ . '/../src/routes/clearChunks.php';
-require __DIR__ . '/../src/routes/mergeVideo.php';
-//require_once __DIR__ . 'utils.php'; //dodanie w composer.json
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Tuupola\Middleware\CorsMiddleware;
+use Utils\DatabasePostgres;
 
-// Inicjalizacja Smarty
+$db = new DatabasePostgres('db-slim', 5432, 'my_database', 'user', 'password');
+$pdo = $db->getConnection();
+
 $smarty = new Smarty();
 $smarty->setTemplateDir(__DIR__ . '/../templates');  // Katalog szablonów
 $smarty->setCompileDir(__DIR__ . '/../templates_c'); // Katalog kompilacji

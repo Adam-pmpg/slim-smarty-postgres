@@ -1,5 +1,7 @@
 <?php
 
+use function Utils\sortChunksByIndexInFileName;
+
 /**
  * Funkcja do rejestracji trasy scalania plików w Slim
  *

@@ -7,7 +7,13 @@
   },
   "autoload": {
     "files": [
-      "./src/Utils/utils.php"
+      "./db/DatabasePostgres.php",
+      "./src/utils/utils.php",
+      "./src/routes/getHomepage.php",
+      "./src/routes/users.php",
+      "./src/routes/mergeVideo.php",
+      "./src/routes/clearChunks.php",
+      "./src/routes/uploadVideo.php"
     ]
   }
 }

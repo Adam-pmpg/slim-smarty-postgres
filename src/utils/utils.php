@@ -1,5 +1,6 @@
 <?php
 
+namespace Utils;
 // Funkcja pomocnicza do sortowania plików fragmentów
 function sortChunksByIndexInFileName(array $chunks) {
     usort($chunks, function($a, $b) {
