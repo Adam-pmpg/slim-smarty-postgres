@@ -41,6 +41,11 @@ e6faa3355787   postgres:13                    "docker-entrypoint.s…"   About a
 ### Jeśli potrzeba, uruchomienie coposer'a wewnątrz kontenera
 
 docker-compose exec php-apache-slim composer install
+- po dodaniu nowego namespace'a:
+```
+composer dump-autoload
+```
+
 ### Zanurkuj do kontenera
 
 docker exec -it slim-smarty-postgres-php-apache-slim-1 /bin/bash
