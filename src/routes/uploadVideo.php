@@ -49,8 +49,8 @@ function uploadVideo($app) {
         }
 
         $originalName = $file->getClientFilename();
-        $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
-        $chunksDir = __DIR__ . "/../../chunks/{$safeName}";
+        $safeFileName = preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+        $chunksDir = __DIR__ . "/../../chunks/{$safeFileName}";
 
         if (!is_dir($chunksDir)) {
             mkdir($chunksDir, 0777, true);
@@ -80,7 +80,8 @@ function uploadVideo($app) {
             'chunkIndex' => $chunkIndex,
             'totalChunks' => $totalChunks,
             'progress' => ($chunkIndex + 1) / $totalChunks * 100, // Procent ukończenia
-            'file' => $originalName
+            'file' => $originalName,
+            'safeFileName' => $safeFileName,
         ];
 
         $response->getBody()->write(json_encode($responseData));
