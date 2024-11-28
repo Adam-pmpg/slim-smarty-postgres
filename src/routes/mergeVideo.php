@@ -1,5 +1,11 @@
 <?php
-// Funkcja do rejestracji trasy scalania plików w Slim
+
+/**
+ * Funkcja do rejestracji trasy scalania plików w Slim
+ *
+ * @param $app
+ * @return void
+ */
 function mergeVideo($app) {
     // Endpoint do scalania plików dla domyślnego katalogu
     $app->post('/merge-video', function ($request, $response) {
@@ -24,9 +30,9 @@ function mergeVideo($app) {
     $app->post('/merge-video/{folder_name}', function ($request, $response, $args) {
         $folderName = $args['folder_name'];
         $chunksDir = __DIR__ . '/../../chunks/' . $folderName . '/';
-        $outputDir = __DIR__ . '/../../output/';
+        $outputDir = __DIR__ . '/../../output/' . $folderName . '/';
 
-        // Sprawdź, czy katalog istnieje
+        // Sprawdź, czy katalog wejściony z chunks, istnieje
         if (!is_dir($chunksDir)) {
             $response->getBody()->write(json_encode([
                 'status' => 'error',
@@ -35,7 +41,9 @@ function mergeVideo($app) {
 
             return $response->withStatus(404)->withHeader('Content-Type', 'application/json; charset=utf-8');
         }
-
+        if (!is_dir($outputDir)) {
+            mkdir($outputDir, 0777, true);
+        }
         // Pobierz listę plików w podanym katalogu
         $chunks = glob($chunksDir . 'chunk_*');
         if (empty($chunks)) {
@@ -70,7 +78,6 @@ function processChunks($chunks, $outputDir, $response) {
 
     // Zamiast wyodrębniać rozszerzenie, bezpośrednio tworzymy plik wynikowy z pełną nazwą
     $outputFile = $outputDir . $originalNameWithExtension;
-
     // Tworzenie pliku wynikowego
     $outputHandle = fopen($outputFile, 'wb');
     if (!$outputHandle) {
@@ -81,7 +88,7 @@ function processChunks($chunks, $outputDir, $response) {
 
         return $response->withStatus(500)->withHeader('Content-Type', 'application/json; charset=utf-8');
     }
-
+    $chunks = sortChunksByIndexInFileName($chunks);
     // Scalenie plików
     foreach ($chunks as $chunk) {
         $chunkHandle = fopen($chunk, 'rb');

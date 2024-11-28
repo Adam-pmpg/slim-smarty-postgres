@@ -56,9 +56,10 @@ function uploadVideo($app) {
             mkdir($chunksDir, 0777, true);
         }
 
+        //$chunkIndex w formacie trzycyfrowym, później do sortowania
+        $chunkIndexFormatted = str_pad($chunkIndex, 3, "0", STR_PAD_LEFT);
         // Ścieżka do zapisu fragmentu
-
-        $chunkPath = $chunksDir . "/chunk_{$chunkIndex}__{$originalName}";
+        $chunkPath = $chunksDir . "/chunk_{$chunkIndexFormatted}__{$originalName}";
 
         /*var_dump([
             '$chunkPath' => $chunkPath,

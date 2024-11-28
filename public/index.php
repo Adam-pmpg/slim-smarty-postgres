@@ -1,11 +1,12 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../db/db.php';
 require __DIR__ . '/../src/routes/users.php';
 require __DIR__ . '/../src/routes/uploadVideo.php';
 require __DIR__ . '/../src/routes/getHomepage.php';
 require __DIR__ . '/../src/routes/clearChunks.php';
 require __DIR__ . '/../src/routes/mergeVideo.php';
+//require_once __DIR__ . 'utils.php'; //dodanie w composer.json
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
